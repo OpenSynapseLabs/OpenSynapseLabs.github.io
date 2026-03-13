@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Synapse Labs — Intelligence for a Better World</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+    --gold:      #C8922A;
+    --gold-soft: #E8B86D;
+    --gold-pale: rgba(200,146,42,0.10);
+    --gold-faint:rgba(200,146,42,0.05);
+    --warm-bg:   #FAF7F2;
+    --warm-card: rgba(255,252,246,0.92);
+    --text:      #1A1612;
+    --text-mid:  #5A4E3C;
+    --text-soft: #9A8E7A;
+    --border:    rgba(200,146,42,0.18);
+    --border-soft:rgba(200,146,42,0.10);
+    --shadow:    0 8px 40px rgba(180,120,30,0.08);
+    --shadow-lg: 0 20px 70px rgba(180,120,30,0.12);
+    --green:     #3D7A5C;
+    --radius:    2px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+    font-family:'DM Sans',sans-serif;
+    background-color:var(--warm-bg);
+    background-image:
+        radial-gradient(ellipse at 15% 10%, rgba(232,184,109,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 80%, rgba(200,146,42,0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255,245,220,0.5) 0%, transparent 70%);
+    background-attachment:fixed;
+    color:var(--text);
+    overflow-x:hidden;
+    line-height:1.6;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:0;
+    opacity:0.4;
+}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 5%;position:relative;z-index:2;}
+.mono{font-family:'DM Mono',monospace;}
+
+/* ── NAV ── */
+nav{
+    position:fixed;width:100%;z-index:100;
+    padding:20px 0;
+    background:rgba(250,247,242,0.88);
+    backdrop-filter:blur(28px);
+    -webkit-backdrop-filter:blur(28px);
+    border-bottom:1px solid var(--border-soft);
+}
+.nav-inner{display:flex;justify-content:space-between;align-items:center;}
+.logo{
+    font-family:'DM Serif Display',serif;
+    font-size:1.15rem;letter-spacing:0.5px;color:var(--text);
+    text-decoration:none;display:flex;align-items:center;gap:10px;
+}
+.logo-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;}
+nav ul{display:flex;list-style:none;gap:32px;}
+nav a{
+    color:var(--text-soft);text-decoration:none;
+    font-family:'DM Mono',monospace;font-size:0.65rem;
+    font-weight:400;letter-spacing:2px;text-transform:uppercase;
+    transition:color .3s;
+}
+nav a:hover{color:var(--gold);}
+
+/* ── SECTIONS ── */
+section{padding:110px 0;position:relative;z-index:2;}
+.section-label{
+    font-family:'DM Mono',monospace;font-size:0.62rem;
+    letter-spacing:4px;text-transform:uppercase;color:var(--gold);
+    margin-bottom:12px;display:flex;align-items:center;gap:10px;
+}
+.section-label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--gold);}
+.section-head{margin-bottom:52px;}
+.section-head h2{
+    font-family:'DM Serif Display',serif;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:400;color:var(--text);line-height:1.15;
+}
+.section-head h2 em{color:var(--gold);font-style:italic;}
+
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);position:relative;z-index:2;}
+
+/* FADE IN */
+.fade-in{opacity:0;transform:translateY(18px);transition:opacity .75s ease,transform .75s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:90px;}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+
+.hero-tag{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:3px;
+    color:var(--gold);margin-bottom:28px;
+    padding:7px 14px;
+    background:var(--gold-pale);
+    border:1px solid var(--border);
+}
+.tag-pulse{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(0.8);}}
+
+.hero h1{
+    font-family:'DM Serif Display',serif;
+    font-size:clamp(3rem,5.5vw,5rem);
+    font-weight:400;line-height:1.05;
+    margin-bottom:20px;color:var(--text);
+    animation:fadeUp 1s ease-out both;
+}
+.hero h1 em{color:var(--gold);font-style:italic;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+.hero-sub{
+    font-family:'DM Mono',monospace;font-size:0.77rem;
+    color:var(--text-soft);border-left:2px solid var(--gold);
+    padding-left:16px;margin-bottom:20px;line-height:1.9;letter-spacing:.3px;
+    animation:fadeUp 1.1s ease-out both;
+}
+
+.hero-desc{
+    color:var(--text-mid);font-size:0.96rem;
+    margin-bottom:38px;line-height:1.8;max-width:500px;
+    animation:fadeUp 1.2s ease-out both;
+}
+
+.btn-group{display:flex;gap:18px;align-items:center;flex-wrap:wrap;animation:fadeUp 1.3s ease-out both;}
+.btn-primary{
+    padding:13px 32px;background:var(--gold);color:#fff;
+    text-decoration:none;font-family:'DM Mono',monospace;
+    font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;
+    transition:all .3s;border:1px solid var(--gold);
+    border-radius:var(--radius);
+}
+.btn-primary:hover{background:#A8761E;box-shadow:0 6px 24px rgba(200,146,42,0.3);transform:translateY(-2px);}
+.btn-ghost{
+    font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:1.5px;
+    color:var(--text-soft);text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;text-decoration:none;transition:color .3s;
+}
+.btn-ghost::before{content:'→';color:var(--gold);}
+.btn-ghost:hover{color:var(--gold);}
+
+/* TERMINAL CARD */
+.terminal-card{
+    background:var(--warm-card);
+    border:1px solid var(--border);
+    border-top:2px solid var(--gold);
+    padding:28px;
+    box-shadow:var(--shadow-lg);
+    animation:fadeUp 1.2s ease-out both;
+}
+.terminal-header{display:flex;align-items:center;gap:7px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-soft);}
+.t-dot{width:9px;height:9px;border-radius:50%;}
+.t-dot.r{background:#FF6058;}.t-dot.y{background:#FFBD2E;}.t-dot.g{background:#28C840;}
+.t-label{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-soft);margin-left:6px;letter-spacing:1px;}
+#typewriter{font-family:'DM Mono',monospace;font-size:0.68rem;line-height:1.9;color:var(--text-mid);}
+
+/* ── PRODUCTS ── */
+.cat-tabs{display:flex;gap:4px;margin-bottom:36px;flex-wrap:wrap;}
+.cat-tab{
+    font-family:'DM Mono',monospace;font-size:0.64rem;letter-spacing:2px;
+    text-transform:uppercase;padding:9px 20px;
+    border:1px solid var(--border);
+    background:transparent;color:var(--text-soft);cursor:pointer;transition:all .3s;
+    border-radius:var(--radius);
+}
+.cat-tab.active,.cat-tab:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-pale);}
+
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.prod-card{
+    background:var(--warm-card);border:1px solid var(--border);
+    border-top:2px solid var(--gold);
+    padding:30px 26px;transition:all .35s;display:none;
+    box-shadow:var(--shadow);border-radius:var(--radius);
+}
+.prod-card.show{display:block;}
+.prod-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+
+.prod-badge{
+    font-family:'DM Mono',monospace;font-size:0.57rem;letter-spacing:2px;
+    text-transform:uppercase;padding:4px 10px;margin-bottom:14px;display:inline-block;
+    border:1px solid var(--border);color:var(--gold);background:var(--gold-faint);
+    border-radius:var(--radius);
+}
+.badge-robot{color:var(--green);background:rgba(61,122,92,0.06);border-color:rgba(61,122,92,0.25);}
+.badge-chip{color:#C05C1A;background:rgba(192,92,26,0.06);border-color:rgba(192,92,26,0.25);}
+.badge-bci{color:#6B47A8;background:rgba(107,71,168,0.06);border-color:rgba(107,71,168,0.25);}
+
+.prod-icon{font-size:1.5rem;margin-bottom:12px;}
+.prod-card h3{font-family:'DM Serif Display',serif;font-size:1.2rem;font-weight:400;margin-bottom:10px;color:var(--text);}
+.prod-desc{color:var(--text-mid);font-size:0.87rem;line-height:1.75;margin-bottom:16px;}
+.prod-params{
+    font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text-soft);
+    line-height:2;margin-bottom:18px;
+    border-top:1px solid var(--border-soft);padding-top:14px;
+}
+.prod-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.prod-status{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;
+}
+.prod-status.ready{color:var(--green);}
+.prod-status.ready::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block;}
+.prod-status.soon{color:var(--gold);}
+.prod-status.soon::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block;animation:pulse 2s infinite;}
+.prod-status.wip{color:var(--text-soft);}
+.prod-status.concept{color:var(--text-soft);}
+
+/* ── BUSINESS MODEL ── */
+.biz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:48px;}
+.biz-card{
+    background:var(--warm-card);border:1px solid var(--border);
+    border-top:2px solid var(--gold);
+    padding:32px 28px;box-shadow:var(--shadow);
+    border-radius:var(--radius);transition:all .35s;
+}
+.biz-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.biz-num{
+    font-family:'DM Serif Display',serif;font-size:2.5rem;
+    color:var(--gold);opacity:0.3;margin-bottom:8px;line-height:1;
+}
+.biz-card h3{font-family:'DM Serif Display',serif;font-size:1.15rem;font-weight:400;margin-bottom:10px;color:var(--text);}
+.biz-card p{color:var(--text-mid);font-size:0.88rem;line-height:1.75;}
+.biz-tag{
+    display:inline-block;margin-top:14px;
+    font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:2px;
+    text-transform:uppercase;color:var(--gold);
+    padding:4px 10px;border:1px solid var(--border);background:var(--gold-faint);
+    border-radius:var(--radius);
+}
+
+/* ── ARCHITECTURE ── */
+.specs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.spec-card{
+    background:var(--warm-card);border:1px solid var(--border);
+    border-left:2px solid var(--gold);
+    padding:30px 26px;box-shadow:var(--shadow);
+    border-radius:var(--radius);
+}
+.spec-icon{font-size:1.3rem;margin-bottom:14px;color:var(--gold);}
+.spec-card h3{font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;margin-bottom:12px;color:var(--text);}
+.spec-card p{color:var(--text-mid);font-size:0.86rem;line-height:1.8;}
+.spec-card p strong{color:var(--text);}
+
+/* ── ROADMAP ── */
+.roadmap-track{display:flex;flex-direction:column;gap:0;}
+.roadmap-block{
+    display:grid;grid-template-columns:120px 1fr;gap:32px;
+    padding:36px 0;border-bottom:1px solid var(--border-soft);
+    opacity:0;transform:translateX(-16px);
+    transition:opacity .7s ease,transform .7s ease;
+}
+.roadmap-block.visible{opacity:1;transform:translateX(0);}
+.roadmap-year{
+    font-family:'DM Serif Display',serif;
+    font-size:2.2rem;color:var(--gold);opacity:0.4;
+    line-height:1;padding-top:4px;
+}
+.roadmap-models{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;}
+.model-tag{
+    background:var(--warm-card);border:1px solid var(--border);
+    padding:14px 18px;min-width:200px;box-shadow:var(--shadow);
+    border-radius:var(--radius);
+}
+.model-tag.now{border-top:2px solid var(--green);}
+.model-tag.next{border-top:2px solid var(--gold);}
+.model-tag.future{border-top:2px solid rgba(200,146,42,0.4);}
+.model-tag h4{font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;margin-bottom:4px;color:var(--text);}
+.model-tag .params{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-soft);line-height:1.6;}
+
+/* ── FOUNDER ── */
+.founder-card{
+    display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;
+    background:var(--warm-card);border:1px solid var(--border);
+    border-top:2px solid var(--gold);
+    padding:40px;box-shadow:var(--shadow-lg);
+    border-radius:var(--radius);
+}
+.founder-avatar{
+    width:90px;height:90px;border-radius:50%;
+    background:var(--gold-pale);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);
+}
+.founder-role{
+    font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:3px;
+    text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:block;
+}
+.founder-card h3{font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;margin-bottom:12px;color:var(--text);}
+.founder-card p{color:var(--text-mid);font-size:0.92rem;line-height:1.8;margin-bottom:18px;}
+.social-links{display:flex;gap:14px;}
+.social-links a{
+    width:36px;height:36px;border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-soft);text-decoration:none;transition:all .3s;
+    border-radius:var(--radius);font-size:0.85rem;
+}
+.social-links a:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-pale);}
+
+/* ── CONTACT ── */
+.contact-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;}
+.contact-info h2{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:400;line-height:1.2;margin-bottom:20px;color:var(--text);}
+.contact-info h2 em{color:var(--gold);font-style:italic;}
+.contact-info p{color:var(--text-mid);font-size:0.92rem;line-height:1.8;margin-bottom:28px;}
+.contact-meta{display:flex;flex-direction:column;gap:12px;}
+.meta-item{display:flex;align-items:center;gap:14px;font-size:0.88rem;color:var(--text-mid);}
+.meta-icon{
+    width:30px;height:30px;border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold);font-size:0.7rem;flex-shrink:0;
+    border-radius:var(--radius);
+}
+.meta-item a{color:var(--gold);text-decoration:none;}
+
+.contact-form{background:var(--warm-card);border:1px solid var(--border);border-top:2px solid var(--gold);padding:36px;box-shadow:var(--shadow);border-radius:var(--radius);}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-soft);margin-bottom:8px;}
+.form-group input,.form-group textarea{
+    width:100%;padding:11px 14px;
+    background:var(--warm-bg);border:1px solid var(--border);
+    color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.9rem;
+    transition:border-color .3s;outline:none;border-radius:var(--radius);
+}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--gold);}
+.form-group textarea{height:110px;resize:vertical;}
+.btn-submit{
+    width:100%;padding:13px;background:var(--gold);color:#fff;
+    border:none;cursor:pointer;
+    font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;
+    transition:all .3s;border-radius:var(--radius);
+}
+.btn-submit:hover{background:#A8761E;box-shadow:0 6px 24px rgba(200,146,42,0.3);}
+.form-note{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text-soft);margin-top:10px;opacity:.6;}
+.form-error{display:none;color:#C05C1A;font-size:0.8rem;margin-top:10px;}
+.form-success{display:none;text-align:center;padding:40px 20px;font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:2px;color:var(--gold);}
+
+/* ── FOOTER ── */
+footer{
+    padding:40px 0;border-top:1px solid var(--border-soft);
+    position:relative;z-index:2;
+}
+.foot-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+footer p{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:2px;color:var(--text-soft);}
+footer p span{color:var(--gold);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+    .hero-grid,.contact-wrapper,.founder-card{grid-template-columns:1fr;gap:40px;}
+    .roadmap-block{grid-template-columns:80px 1fr;gap:20px;}
+    nav ul{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <div class="wrap nav-inner">
+        <a href="#" class="logo">
+            <span class="logo-dot"></span>
+            Open Synapse Labs
+        </a>
+        <ul>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#business">Business</a></li>
+            <li><a href="#specs">Architecture</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+            <li><a href="#founder">Founder</a></li>
+            <li><a href="#contact">Invest</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="wrap">
+        <div class="hero-grid">
+            <div>
+                <div class="hero-tag">
+                    <span class="tag-pulse"></span>
+                    Seed Round Open — Summer 2026
+                </div>
+                <h1>Intelligence<br>That Makes<br>the World <em>Better.</em></h1>
+                <div class="hero-sub">
+                    "Intelligence is not what you know —<br>it's who you become."
+                </div>
+                <p class="hero-desc">
+                    We build AI not to replace humanity — but to amplify it.
+                    Sparse AI models, EAP-driven robotics, and quantum photonic chips —
+                    engineered as one unified platform.
+                </p>
+                <div class="btn-group">
+                    <a href="#contact" class="btn-primary">Get Pitch Deck</a>
+                    <a href="#products" class="btn-ghost">Explore Products</a>
+                </div>
+            </div>
+            <div>
+                <div class="terminal-card">
+                    <div class="terminal-header">
+                        <div class="t-dot r"></div>
+                        <div class="t-dot y"></div>
+                        <div class="t-dot g"></div>
+                        <span class="t-label">arche3_config.py — v4</span>
+                    </div>
+                    <div id="typewriter"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRODUCTS -->
+<section id="products">
+    <div class="wrap">
+        <div class="section-head fade-in">
+            <div class="section-label">Our Technologies</div>
+            <h2>Three Pillars, <em>One Vision</em></h2>
+        </div>
+        <div class="cat-tabs">
+            <button class="cat-tab active" onclick="filterCat(this,'all')">All</button>
+            <button class="cat-tab" onclick="filterCat(this,'ai')">AI Models</button>
+            <button class="cat-tab" onclick="filterCat(this,'robot')">Robotics</button>
+            <button class="cat-tab" onclick="filterCat(this,'chip')">Quantum Photonic</button>
+            <button class="cat-tab" onclick="filterCat(this,'bci')">BCI</button>
+        </div>
+        <div class="products-grid">
+
+            <!-- Arche3-7B -->
+            <div class="prod-card show fade-in" data-cat="ai">
+                <div class="prod-badge">AI Model</div>
+                <div class="prod-icon">🧠</div>
+                <h3>Arche3-7B</h3>
+                <p class="prod-desc">Working prototype. Massively sparse MoE with 20,480 experts across 8 domains. Runs fully locally on consumer hardware. AIS benchmark: 53/100 — Strong LLM level with all three evaluation blocks passed.</p>
+                <div class="prod-params">
+                    d_model = 2048 | n_layers = 10 (5+5)<br>
+                    total_experts = 20,480 (8 × 2,560)<br>
+                    expert_rank = 160 | dynamic_k ∈ [2,4]<br>
+                    RAM ~5 GB · vRAM ~5 GB<br>
+                    Dopamine System: 20/20 ✓
+                </div>
+                <div class="prod-footer">
+                    <span class="prod-status ready">Working Prototype</span>
+                </div>
+            </div>
+
+            <!-- Arche3-35B -->
+            <div class="prod-card show fade-in" data-cat="ai">
+                <div class="prod-badge">AI Model</div>
+                <div class="prod-icon">⚡</div>
+                <h3>Arche3-35B</h3>
+                <p class="prod-desc">Scaled architecture with 40,960 experts, dopamine learning system v2, self-reflection engine, and quantum router. Designed for ArchePhoton-35 native inference — the first model built for a photonic chip from day one.</p>
+                <div class="prod-params">
+                    d_model = 4096 | n_layers = 8 (4+4)<br>
+                    total_experts = 40,960 (14 domains)<br>
+                    Quantum Router: 4-qubit sim | 7ns<br>
+                    Ethical Core: kill_human → hard block<br>
+                    Self-Reflection Engine ✓
+                </div>
+                <div class="prod-footer">
+                    <span class="prod-status soon">In Development — 2026</span>
+                </div>
+            </div>
+
+            <!-- Arche3-86B -->
+            <div class="prod-card show fade-in" data-cat="ai">
+                <div class="prod-badge">AI Model</div>
+                <div class="prod-icon">🌐</div>
+                <h3>Arche3-86B Pro</h3>
+                <p class="prod-desc">Full AGI system with World Model integration and hardwired Ethical Core. Complex multi-domain reasoning designed for real-world beneficial deployment.</p>
+                <div class="prod-params">
+                    World Model: Visual (224px) + State (512)<br>
+                    Ethical Core: human_protection = 1.0<br>
+                    safety_threshold = 0.7<br>
+                    memory_size = 50,000 slots
+                </div>
+                <div class="prod-footer">
+                    <span class="prod-status wip">Planned — 2027</span>
+                </div>
+            </div>
+
+            <!-- EAP Actuator -->
+            <div class="prod-card show fade-in" data-cat="robot">
+                <div class="prod-badge badge-robot">Robotics — EAP</div>
+                <div class="prod-icon">🦾</div>
+                <h3>Synapse EAP-1</h3>
+                <p class="prod-desc">First-generation actuator powered by Electroactive Polymers. Silent, lightweight, biologically fluid movement — no hydraulics, no metal gears. The muscle layer for the Synapse EAP-Body.</p>
+                <div class="prod-params">
+                    Technology: Electroactive Polymer<br>
+                    Mode: Ionic / Dielectric actuation<br>
+                    Design: Biomimetic soft-body motion
+                </div>
+                <div class="prod-footer">
+                    <span class="prod-status wip">Research Phase</span>
+                </div>
+            </div>
+
+            <!-- EAP Body -->
+            <div class="prod-card show fade-in" data-cat="robot">
+                <div class="prod-badge badge-robot">Robotics — EAP</div>
+                <div class="prod-icon">🤖</div>
+                <h3>Synapse EAP-Body</h3>
+                <p class="prod-desc">Humanoid robotic platform powered by EAP musculature and driven by the Arche3 neural core. Built for assistance, care, and exploration. Not to replace people — to protect them.</p>
+                <div class="prod-params">
+                    Actuation: Full EAP musculature<br>
+                    Control: Arche3 World Model backbone<br>
+                    Primary goal: Human protection
+                </div>
+                <div class="prod-footer">
+                    <span class="prod-status concept">Concept — 2027+</span>
+                </div>
+            </div>
+
+            <!-- QPU-1 -->
+            <div class="prod-card show fade-in" data-cat="chip">
+                <div class="prod-badge badge-chip">Quantum Photonic</div>
+                <div class="prod-icon">⬡</div>
+                <h3>ArchePhoton-35 / QPU-1</h3>
+                <p class="prod-desc">Proprietary quantum photonic chip — not a classical accelerator. Light-encoded MZI matrix computation with GST phase-change memory. Architecture complete, simulation done. Built specifically for Arche3-35B.</p>
+                <div class="prod-params">
+                    Power (training): ~90 mW<br>
+                    Power (inference): 35–45 mW<br>
+                    vs NVIDIA T4: ~1750× less power<br>
+                    MZI latency: ~10.7 ns | Router: ~7 ns
+                </div>
+                <div class="prod-footer">
+                    <span class="prod-status soon">Seeking Team — Tape-out 2027</span>
+                </div>
+            </div>
+
+            <!-- BCI -->
+            <div class="prod-card show fade-in" data-cat="bci">
+                <div class="prod-badge badge-bci">BCI</div>
+                <div class="prod-icon">🧬</div>
+                <h3>Synapse BCI</h3>
+                <p class="prod-desc">Brain-computer interface research direction. EMG signal processing and neural control layer for the EAP robotics platform. Early research phase — data collection and algorithm development underway.</p>
+                <div class="prod-params">
+                    Technology: EMG signal processing<br>
+                    Target: EAP robotics control layer<br>
+                    Data: Research collection active
+                </div>
+                <div class="prod-footer">
+                    <span class="prod-status wip">Research Phase</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BUSINESS MODEL -->
+<section id="business">
+    <div class="wrap">
+        <div class="section-head fade-in">
+            <div class="section-label">Business Model</div>
+            <h2>How We <em>Generate Value</em></h2>
+        </div>
+        <div class="biz-grid">
+            <div class="biz-card fade-in">
+                <div class="biz-num">01</div>
+                <h3>AI Model Licensing</h3>
+                <p>Arche3 models licensed to businesses and researchers for local deployment. Full privacy — your data never leaves your hardware. No subscription to a cloud, no data collection.</p>
+                <span class="biz-tag">Coming 2026</span>
+            </div>
+            <div class="biz-card fade-in">
+                <div class="biz-num">02</div>
+                <h3>Compute Rental</h3>
+                <p>Once ArchePhoton-35 is in production, OSL will offer photonic inference as a service — orders of magnitude more power-efficient than GPU-based cloud compute.</p>
+                <span class="biz-tag">Post tape-out 2027</span>
+            </div>
+            <div class="biz-card fade-in">
+                <div class="biz-num">03</div>
+                <h3>Robotics Sales</h3>
+                <p>Synapse EAP-Body units sold to enterprises, research institutions, and healthcare providers. Each robot ships with an Arche3 neural core — intelligence built in, not bolted on.</p>
+                <span class="biz-tag">2027+</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ARCHITECTURE -->
+<section id="specs">
+    <div class="wrap">
+        <div class="section-head fade-in">
+            <div class="section-label">Core Architecture</div>
+            <h2>Arche3 <em>Technical Design</em></h2>
+        </div>
+        <div class="specs-grid">
+            <div class="spec-card fade-in">
+                <div class="spec-icon">◈</div>
+                <h3>Two-Stage Dense Core</h3>
+                <p><strong>5-layer Input encoder</strong> + <strong>5-layer Fusion decoder</strong>. d_model=2048, GQA with 16 heads / 4 KV-heads. Handles tokenization and expert output synthesis — ~100M params each.</p>
+            </div>
+            <div class="spec-card fade-in">
+                <div class="spec-icon">⟡</div>
+                <h3>MoE Hive — 20,480 Experts</h3>
+                <p><strong>8 domains × 2,560 experts</strong>. SmartRouter with entropy bonus, load balance loss, and adaptive temperature — prevents routing collapse. Dynamic Top-K k∈[2,4].</p>
+            </div>
+            <div class="spec-card fade-in">
+                <div class="spec-icon">◎</div>
+                <h3>Dopamine Learning System</h3>
+                <p>Autonomous curriculum manager that decides what to learn next via reward signal: novelty + weakness + improvement + ethical bonus. Sparse Hebbian weight updates — no full backprop required.</p>
+            </div>
+            <div class="spec-card fade-in">
+                <div class="spec-icon">◉</div>
+                <h3>Ethical Core</h3>
+                <p>Hardwired constraints — not soft filters. <strong>human_protection = 1.0</strong>. At the hardware level in ArchePhoton-35: kill_human &gt; 0.1 triggers a hard interrupt line.</p>
+            </div>
+            <div class="spec-card fade-in">
+                <div class="spec-icon">◇</div>
+                <h3>Self-Reflection Engine</h3>
+                <p>Autonomous internal cognition without external prompting. The model evaluates its own reasoning, detects errors, and adjusts — independent of user interaction. Unique to Arche3-35B+.</p>
+            </div>
+            <div class="spec-card fade-in">
+                <div class="spec-icon">⬡</div>
+                <h3>ArchePhoton-35 Chip</h3>
+                <p>MZI optical matrices + GST phase-change expert memory. <strong>~40 mW inference</strong> vs 70W for NVIDIA T4. Every architectural decision in the chip maps directly to the model.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+    <div class="wrap">
+        <div class="section-head fade-in">
+            <div class="section-label">Strategy</div>
+            <h2>Release <em>Roadmap</em></h2>
+        </div>
+        <div class="roadmap-track">
+            <div class="roadmap-block">
+                <div class="roadmap-year">Now</div>
+                <div class="roadmap-models">
+                    <div class="model-tag now">
+                        <h4>Arche3-7B</h4>
+                        <div class="params">Working prototype · AIS 53/100 · Dopamine 20/20</div>
+                    </div>
+                    <div class="model-tag now">
+                        <h4>ArchePhoton-35</h4>
+                        <div class="params">Architecture complete · Simulation done · Seeking team</div>
+                    </div>
+                </div>
+            </div>
+            <div class="roadmap-block">
+                <div class="roadmap-year">2026</div>
+                <div class="roadmap-models">
+                    <div class="model-tag next">
+                        <h4>Arche3-35B</h4>
+                        <div class="params">40,960 experts · QPU-1 target · Full training run</div>
+                    </div>
+                    <div class="model-tag next">
+                        <h4>Seed Round</h4>
+                        <div class="params">$100–200k · Angels + EU Grants</div>
+                    </div>
+                    <div class="model-tag next">
+                        <h4>QPU-1 Tape-out Prep</h4>
+                        <div class="params">FPGA prototype · Foundry selection · Patent filing</div>
+                    </div>
+                </div>
+            </div>
+            <div class="roadmap-block">
+                <div class="roadmap-year">2027</div>
+                <div class="roadmap-models">
+                    <div class="model-tag future">
+                        <h4>Arche3-86B Pro</h4>
+                        <div class="params">World Model + Ethical Core · Full AGI system</div>
+                    </div>
+                    <div class="model-tag future">
+                        <h4>Synapse EAP-Body</h4>
+                        <div class="params">Humanoid EAP Robot · Arche3 backbone</div>
+                    </div>
+                    <div class="model-tag future">
+                        <h4>First Silicon</h4>
+                        <div class="params">AP35-Ω1 validation · Series A: $5–15M</div>
+                    </div>
+                </div>
+            </div>
+            <div class="roadmap-block">
+                <div class="roadmap-year">2028+</div>
+                <div class="roadmap-models">
+                    <div class="model-tag future">
+                        <h4>Arche3-200B Enterprise</h4>
+                        <div class="params">200B · Corporate deployment</div>
+                    </div>
+                    <div class="model-tag future">
+                        <h4>QPU-1 Production</h4>
+                        <div class="params">Photonic inference rental · Full ASIC run</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOUNDER -->
+<section id="founder">
+    <div class="wrap">
+        <div class="section-head fade-in">
+            <div class="section-label">Leadership</div>
+            <h2>The <em>Architect</em></h2>
+        </div>
+        <div class="founder-card fade-in">
+            <div class="founder-avatar">I</div>
+            <div class="founder-info">
+                <span class="founder-role">Founder & Chief Architect</span>
+                <h3>Ilya Osovskoi</h3>
+                <p>Building the transition from brute-force LLMs to agile, sparse-matrix intelligent systems. Developed Arche3-7B prototype, dopamine learning system, SmartRouter, self-reflection engine, and ArchePhoton-35 chip architecture — solo. Core belief: technology must serve humanity first, profit second.</p>
+                <div class="social-links">
+                    <a href="https://github.com/ilyaosovskoi" target="_blank">GH</a>
+                    <a href="https://doi.org/10.5281/zenodo.18738608" target="_blank">DOI</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+    <div class="wrap">
+        <div class="contact-wrapper">
+            <div class="contact-info fade-in">
+                <div class="section-label">Connect</div>
+                <h2>Partner with<br><em>Open Synapse</em><br>Labs</h2>
+                <p>Join the Seed Round. Scaling infrastructure for Arche3, EAP robotics, and quantum photonic silicon. Looking for partners who share one belief: technology should make the world genuinely better.</p>
+                <div class="contact-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">@</div>
+                        <a href="mailto:contact.opensynapselabs@gmail.com">contact.opensynapselabs@gmail.com</a>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">⌖</div>
+                        Remote-First / Global
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">◈</div>
+                        Stage: Seed Round Open
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">♡</div>
+                        Mission: Make the world better
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form fade-in">
+                <form id="contactForm" action="https://formspree.io/f/mkovqbgq" method="POST" onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" placeholder="Your name" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" placeholder="you@company.com" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" placeholder="Tell us about your interest in Open Synapse Labs..." required></textarea>
+                    </div>
+                    <input type="hidden" name="_subject" value="New message — opensynapselabs.github.io">
+                    <button type="submit" class="btn-submit" id="submitBtn">→ &nbsp;Send Message</button>
+                    <div class="form-error" id="formError">Failed to send. Email us directly at contact.opensynapselabs@gmail.com</div>
+                </form>
+                <div class="form-success" id="formSuccess">
+                    <div style="font-size:2rem;margin-bottom:16px;color:var(--gold);">✓</div>
+                    MESSAGE RECEIVED<br>
+                    <span style="color:var(--text-soft);font-size:0.68rem;letter-spacing:1px;display:block;margin-top:10px;">We will respond within 48 hours.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="wrap foot-inner">
+        <p>© 2026 <span>OPEN SYNAPSE LABS</span></p>
+        <p>Intelligence for a Better World</p>
+        <p>ILYA OSOVSKOI // ALL RIGHTS RESERVED</p>
+    </div>
+</footer>
+
+<script>
+// TYPEWRITER
+const code=[
+    "<span style='color:#9A8E7A'># ARCHE3-7B — AIS v1 · Working Prototype</span>",
+    "<span style='color:#A8761E'>class</span> <span style='color:#C8922A'>Config</span>:",
+    "  d_model         = <span style='color:#3D7A5C'>2048</span>",
+    "  total_experts   = <span style='color:#3D7A5C'>20480</span>  <span style='color:#9A8E7A'># MoE Hive</span>",
+    "  expert_rank     = <span style='color:#3D7A5C'>160</span>",
+    "  dynamic_k       = <span style='color:#3D7A5C'>[2, 4]</span>",
+    "  dopamine        = <span style='color:#C8922A'>True</span>  <span style='color:#9A8E7A'># v1</span>",
+    "  ethical_core    = <span style='color:#C8922A'>True</span>",
+    "  human_protection= <span style='color:#3D7A5C'>1.0</span>",
+    "",
+    "<span style='color:#3D7A5C'>▶ AIS Score:   53/100  Strong LLM</span>",
+    "<span style='color:#3D7A5C'>▶ Dopamine:    20/20   ✓</span>",
+    "<span style='color:#C8922A'>▶ RAM: ~5 GB · vRAM: ~5 GB</span>",
+    "<span style='color:#C8922A'>▶ Status: Working Prototype</span>",
+];
+let ci=0;
+(function typeNext(){
+    if(ci<code.length){
+        const d=document.createElement('div');
+        d.innerHTML=code[ci];
+        d.style.marginBottom='2px';
+        document.getElementById('typewriter').appendChild(d);
+        ci++;
+        setTimeout(typeNext,220);
+    }
+})();
+
+// FILTER
+function filterCat(btn,cat){
+    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.prod-card').forEach(card=>{
+        card.classList.toggle('show',cat==='all'||card.dataset.cat===cat);
+    });
+}
+
+// SCROLL ANIMATIONS
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+}),{threshold:.1});
+document.querySelectorAll('.fade-in,.roadmap-block').forEach(el=>obs.observe(el));
+
+// FORM
+async function handleSubmit(e){
+    e.preventDefault();
+    const btn=document.getElementById('submitBtn');
+    const form=document.getElementById('contactForm');
+    const errEl=document.getElementById('formError');
+    errEl.style.display='none';
+    btn.textContent='→  Sending...';
+    btn.disabled=true;
+    try{
+        const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
+        if(res.ok){
+            form.style.display='none';
+            document.getElementById('formSuccess').style.display='block';
+        } else {
+            errEl.style.display='block';
+            btn.textContent='→  Send Message';
+            btn.disabled=false;
+        }
+    } catch{
+        errEl.style.display='block';
+        btn.textContent='→  Send Message';
+        btn.disabled=false;
+    }
+}
+</script>
+</body>
+</html>
